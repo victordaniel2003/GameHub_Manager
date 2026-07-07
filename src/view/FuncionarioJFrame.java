@@ -1,9 +1,14 @@
+package view;
+
 import java.sql.*;
 import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
+
+import dao.FuncionarioDAO;
+import model.Funcionario;
 
 public class FuncionarioJFrame extends javax.swing.JFrame {
     
@@ -12,56 +17,36 @@ public class FuncionarioJFrame extends javax.swing.JFrame {
     
     public FuncionarioJFrame() {
         initComponents();
-        Connect();
         FuncionarioData();
     }
-    
-    Connection con;
-    PreparedStatement pst;
 
-    public void Connect(){
-        
-        try {
-            Class.forName("com.mysql.jdbc.Driver");
-            con = DriverManager.getConnection("jdbc:mysql://localhost/lanhousedb","root","");
-        } catch (ClassNotFoundException ex) {
-            System.getLogger(FuncionarioJFrame.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
-        } catch (SQLException ex) {
-            System.getLogger(FuncionarioJFrame.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
-        }
-        
-    }
     
     private void FuncionarioData(){
-        try {
-            int QQ;
-            pst = con.prepareStatement("SELECT * FROM funcionario");
-            ResultSet Rs = pst.executeQuery();
-            
-            ResultSetMetaData RSMD = Rs.getMetaData();
+         try {
 
-            QQ = RSMD.getColumnCount();
-            
-            DefaultTableModel DFG =(DefaultTableModel)table1.getModel(); 
-            
-            DFG.setRowCount(0);
-             
-            while(Rs.next()){
-        
-            Vector v2 = new Vector();
-             
-            for(int aa=1; aa<=QQ; aa++){
-                 
-                v2.add(Rs.getString("idfuncionario"));
-                v2.add(Rs.getString("nomefuncionario"));
-                v2.add(Rs.getString("emailfuncionario"));
-                v2.add(Rs.getString("enderecofuncionario"));
+            FuncionarioDAO dao = new FuncionarioDAO();
+
+            DefaultTableModel modelo = (DefaultTableModel) table1.getModel();
+
+            modelo.setRowCount(0);
+
+            for (Funcionario funcionario : dao.listarTodos()) {
+
+                modelo.addRow(new Object[]{
+
+                    funcionario.getId(),
+                    funcionario.getNome(),
+                    funcionario.getEmail(),
+                    funcionario.getEndereco()
+
+                });
+
             }
-             
-             DFG.addRow(v2);
-            }
+
         } catch (SQLException ex) {
-            System.getLogger(FuncionarioJFrame.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
+
+            Logger.getLogger(FuncionarioJFrame.class.getName()).log(Level.SEVERE, null, ex);
+
         }
     }
     
@@ -245,60 +230,74 @@ public class FuncionarioJFrame extends javax.swing.JFrame {
 
     private void btnInsertActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnInsertActionPerformed
         try {
-            String idfuncionario = txtIdFuncionario.getText();
-            String nomefuncionario = txtNomeFuncionario.getText();
-            String emailfuncionario = txtEmailFuncionario.getText();
-            String enderecofuncionario = txtAddressFuncionario.getText();
-            
-            pst = con.prepareStatement("INSERT INTO funcionario (idfuncionario,nomefuncionario,emailfuncionario,enderecofuncionario)VALUES(?,?,?,?)");
-            
-            pst.setString(1,idfuncionario);
-            pst.setString(2,nomefuncionario);
-            pst.setString(3,emailfuncionario);
-            pst.setString(4,enderecofuncionario);
-            
-            pst.executeUpdate();
-            JOptionPane.showMessageDialog(this, "Funcionario inserido com sucesso!");
+
+            Funcionario funcionario = new Funcionario();
+
+            funcionario.setId(Integer.parseInt(txtIdFuncionario.getText()));
+            funcionario.setNome(txtNomeFuncionario.getText());
+            funcionario.setEmail(txtEmailFuncionario.getText());
+            funcionario.setEndereco(txtAddressFuncionario.getText());
+
+            FuncionarioDAO dao = new FuncionarioDAO();
+
+            dao.inserir(funcionario);
+
+            JOptionPane.showMessageDialog(this,
+                    "Funcionário inserido com sucesso!");
+
             FuncionarioData();
-        } catch (SQLException ex) {
-            System.getLogger(FuncionarioJFrame.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
+
+        } catch (Exception ex) {
+
+            Logger.getLogger(FuncionarioJFrame.class.getName()).log(Level.SEVERE, null, ex);
+
         }
     }//GEN-LAST:event_btnInsertActionPerformed
 
     private void btnUpdateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnUpdateActionPerformed
         try {
-            String idfuncionario = txtIdFuncionario.getText();
-            String nomefuncionario = txtNomeFuncionario.getText();
-            String emailfuncionario = txtEmailFuncionario.getText();
-            String enderecofuncionario = txtAddressFuncionario.getText();
-            
-            pst = con.prepareStatement("update funcionario set nomefuncionario= ?,emailfuncionario= ?,enderecofuncionario= ? where idfuncionario= ?");
-            
-            pst.setString(1,nomefuncionario);
-            pst.setString(2,emailfuncionario);
-            pst.setString(3,enderecofuncionario);
-            pst.setString(4,idfuncionario);
-            
-            pst.executeUpdate();
-            JOptionPane.showMessageDialog(this, "Funcionario atualizado com sucesso!");
+
+            Funcionario funcionario = new Funcionario();
+
+            funcionario.setId(Integer.parseInt(txtIdFuncionario.getText()));
+            funcionario.setNome(txtNomeFuncionario.getText());
+            funcionario.setEmail(txtEmailFuncionario.getText());
+            funcionario.setEndereco(txtAddressFuncionario.getText());
+
+            FuncionarioDAO dao = new FuncionarioDAO();
+
+            dao.atualizar(funcionario);
+
+            JOptionPane.showMessageDialog(this,
+                    "Funcionário atualizado com sucesso!");
+
             FuncionarioData();
-        } catch (SQLException ex) {
-            System.getLogger(FuncionarioJFrame.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
+
+        } catch (Exception ex) {
+
+            Logger.getLogger(FuncionarioJFrame.class.getName()).log(Level.SEVERE, null, ex);
+
         }
     }//GEN-LAST:event_btnUpdateActionPerformed
 
     private void btnDeleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDeleteActionPerformed
         try {
-            String idfuncionario = txtIdFuncionario.getText();
-            
-            pst=con.prepareStatement("DELETE FROM funcionario WHERE idfuncionario=?");
-            pst.setString(1,idfuncionario);
-            
-            pst.executeUpdate();
-            JOptionPane.showMessageDialog(this, "Funcionario deletado com sucesso!");
+
+            int id = Integer.parseInt(txtIdFuncionario.getText());
+
+            FuncionarioDAO dao = new FuncionarioDAO();
+
+            dao.excluir(id);
+
+            JOptionPane.showMessageDialog(this,
+                    "Funcionário deletado com sucesso!");
+
             FuncionarioData();
-        } catch (SQLException ex) {
-            System.getLogger(FuncionarioJFrame.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
+
+        } catch (Exception ex) {
+
+            Logger.getLogger(FuncionarioJFrame.class.getName()).log(Level.SEVERE, null, ex);
+
         }
     }//GEN-LAST:event_btnDeleteActionPerformed
 
@@ -308,15 +307,15 @@ public class FuncionarioJFrame extends javax.swing.JFrame {
 
     private void btnTotalFuncionarioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnTotalFuncionarioActionPerformed
         try {
-            String sql="select count(nomefuncionario) from funcionario";
-            pst=con.prepareStatement(sql);
-            ResultSet Rs = pst.executeQuery();
-            if(Rs.next()){
-                String sum=Rs.getString("count(nomefuncionario)");
-                txtTotalFuncionario.setText(sum);
-            }
+
+            FuncionarioDAO dao = new FuncionarioDAO();
+
+            txtTotalFuncionario.setText(String.valueOf(dao.contar()));
+
         } catch (SQLException ex) {
-            System.getLogger(FuncionarioJFrame.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
+
+            Logger.getLogger(FuncionarioJFrame.class.getName()).log(Level.SEVERE, null, ex);
+
         }
     }//GEN-LAST:event_btnTotalFuncionarioActionPerformed
 

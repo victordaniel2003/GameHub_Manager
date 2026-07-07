@@ -1,9 +1,15 @@
+package view;
+
+import view.ClienteJFrame;
 import java.sql.*;
 import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
+
+import dao.AluguelDAO;
+import model.Aluguel;
 
 public class AlugarJFrame extends javax.swing.JFrame {
     
@@ -12,56 +18,31 @@ public class AlugarJFrame extends javax.swing.JFrame {
     
     public AlugarJFrame() {
         initComponents();
-        Connect();
         AlugarData();
     }
-    
-    Connection con;
-    PreparedStatement pst;
 
-    public void Connect(){
-        
-        try {
-            Class.forName("com.mysql.jdbc.Driver");
-            con = DriverManager.getConnection("jdbc:mysql://localhost/lanhousedb","root","");
-        } catch (ClassNotFoundException ex) {
-            System.getLogger(AlugarJFrame.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
-        } catch (SQLException ex) {
-            System.getLogger(AlugarJFrame.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
-        }
-        
-    }
-    
     private void AlugarData(){
         try {
-            int QQ;
-            pst = con.prepareStatement("SELECT * FROM aluguel");
-            ResultSet Rs = pst.executeQuery();
-            
-            ResultSetMetaData RSMD = Rs.getMetaData();
 
-            QQ = RSMD.getColumnCount();
-            
-            DefaultTableModel DFG =(DefaultTableModel)table1.getModel(); 
-            
-            DFG.setRowCount(0);
-             
-            while(Rs.next()){
-        
-            Vector v2 = new Vector();
-             
-            for(int aa=1; aa<=QQ; aa++){
-                 
-                v2.add(Rs.getString("idaluguel"));
-                v2.add(Rs.getString("nomecliente"));
-                v2.add(Rs.getString("idcomputador"));
-                v2.add(Rs.getString("qtdhoras"));
+            AluguelDAO dao = new AluguelDAO();
+
+            DefaultTableModel modelo = (DefaultTableModel) table1.getModel();
+
+            modelo.setRowCount(0);
+
+            for (Aluguel aluguel : dao.listarTodos()) {
+
+                modelo.addRow(new Object[]{
+                    aluguel.getIdAluguel(),
+                    aluguel.getNomeCliente(),
+                    aluguel.getIdComputador(),
+                    aluguel.getQtdHoras()
+                });
+
             }
-             
-             DFG.addRow(v2);
-            }
+
         } catch (SQLException ex) {
-            System.getLogger(AlugarJFrame.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
+            Logger.getLogger(AlugarJFrame.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
     
@@ -240,60 +221,63 @@ public class AlugarJFrame extends javax.swing.JFrame {
 
     private void btnInsertActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnInsertActionPerformed
         try {
-            String idaluguel = txtIdAluguel.getText();
-            String nomecliente = txtNomeCliente.getText();
-            String idcomputador = txtIdComputador.getText();
-            String qtdhoras = txtQtdHoras.getText();
-            
-            pst = con.prepareStatement("INSERT INTO aluguel (idaluguel,nomecliente,idcomputador,qtdhoras)VALUES(?,?,?,?)");
-            
-            pst.setString(1,idaluguel);
-            pst.setString(2,nomecliente);
-            pst.setString(3,idcomputador);
-            pst.setString(4,qtdhoras);
-            
-            pst.executeUpdate();
+
+            Aluguel aluguel = new Aluguel();
+
+            aluguel.setIdAluguel(Integer.parseInt(txtIdAluguel.getText()));
+            aluguel.setNomeCliente(txtNomeCliente.getText());
+            aluguel.setIdComputador(Integer.parseInt(txtIdComputador.getText()));
+            aluguel.setQtdHoras(txtQtdHoras.getText());
+
+            AluguelDAO dao = new AluguelDAO();
+
+            dao.inserir(aluguel);
+
             JOptionPane.showMessageDialog(this, "Aluguel salvo com sucesso!");
+
             AlugarData();
+
         } catch (SQLException ex) {
-            System.getLogger(AlugarJFrame.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
+            Logger.getLogger(AlugarJFrame.class.getName()).log(Level.SEVERE, null, ex);
         }
     }//GEN-LAST:event_btnInsertActionPerformed
 
     private void btnUpdateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnUpdateActionPerformed
         try {
-            String idaluguel = txtIdAluguel.getText();
-            String nomecliente = txtNomeCliente.getText();
-            String idcomputador = txtIdComputador.getText();
-            String qtdhoras = txtQtdHoras.getText();
-            
-            pst = con.prepareStatement("update aluguel set nomecliente= ?,idcomputador= ?,qtdhoras= ? where idaluguel= ?");
-            
-            pst.setString(1,nomecliente);
-            pst.setString(2,idcomputador);
-            pst.setString(3,qtdhoras);
-            pst.setString(4,idaluguel);
-            
-            pst.executeUpdate();
+
+            Aluguel aluguel = new Aluguel();
+
+            aluguel.setIdAluguel(Integer.parseInt(txtIdAluguel.getText()));
+            aluguel.setNomeCliente(txtNomeCliente.getText());
+            aluguel.setIdComputador(Integer.parseInt(txtIdComputador.getText()));
+            aluguel.setQtdHoras(txtQtdHoras.getText());
+
+            AluguelDAO dao = new AluguelDAO();
+
+            dao.atualizar(aluguel);
+
             JOptionPane.showMessageDialog(this, "Aluguel atualizado com sucesso!");
+
             AlugarData();
+
         } catch (SQLException ex) {
-            System.getLogger(AlugarJFrame.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
+            Logger.getLogger(AlugarJFrame.class.getName()).log(Level.SEVERE, null, ex);
         }
     }//GEN-LAST:event_btnUpdateActionPerformed
 
     private void btnDeleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDeleteActionPerformed
         try {
-            String idaluguel = txtIdAluguel.getText();
-            
-            pst=con.prepareStatement("DELETE FROM aluguel WHERE idaluguel=?");
-            pst.setString(1,idaluguel);
-            
-            pst.executeUpdate();
-            JOptionPane.showMessageDialog(this, "Aluguel deletado com sucesso!");
+
+            AluguelDAO dao = new AluguelDAO();
+
+            dao.excluir(Integer.parseInt(txtIdAluguel.getText()));
+
+            JOptionPane.showMessageDialog(this, "Aluguel excluído com sucesso!");
+
             AlugarData();
+
         } catch (SQLException ex) {
-            System.getLogger(AlugarJFrame.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
+            Logger.getLogger(AlugarJFrame.class.getName()).log(Level.SEVERE, null, ex);
         }
     }//GEN-LAST:event_btnDeleteActionPerformed
 
@@ -303,15 +287,13 @@ public class AlugarJFrame extends javax.swing.JFrame {
 
     private void btnTotalAluguelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnTotalAluguelActionPerformed
         try {
-            String sql="select count(idaluguel) from aluguel";
-            pst=con.prepareStatement(sql);
-            ResultSet Rs = pst.executeQuery();
-            if(Rs.next()){
-                String sum=Rs.getString("count(idaluguel)");
-                txtTotalAluguel.setText(sum);
-            }
+
+            AluguelDAO dao = new AluguelDAO();
+
+            txtTotalAluguel.setText(String.valueOf(dao.contar()));
+
         } catch (SQLException ex) {
-            System.getLogger(AlugarJFrame.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
+            Logger.getLogger(AlugarJFrame.class.getName()).log(Level.SEVERE, null, ex);
         }
     }//GEN-LAST:event_btnTotalAluguelActionPerformed
 

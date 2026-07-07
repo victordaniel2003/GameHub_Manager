@@ -1,5 +1,9 @@
-import java.sql.*;
-import java.util.Vector;
+package view;
+
+import dao.ClienteDAO;
+import model.Cliente;
+import java.util.List;
+import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JOptionPane;
@@ -12,57 +16,39 @@ public class ClienteJFrame extends javax.swing.JFrame {
     
     public ClienteJFrame() {
         initComponents();
-        Connect();
         ClienteData();
     }
-    
-    Connection con;
-    PreparedStatement pst;
 
-    public void Connect(){
-        
-        try {
-            Class.forName("com.mysql.jdbc.Driver");
-            con = DriverManager.getConnection("jdbc:mysql://localhost/lanhousedb","root","");
-        } catch (ClassNotFoundException ex) {
-            System.getLogger(ClienteJFrame.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
-        } catch (SQLException ex) {
-            System.getLogger(ClienteJFrame.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
-        }
-        
-    }
     
-    private void ClienteData(){
-        try {
-            int QQ;
-            pst = con.prepareStatement("SELECT * FROM cliente");
-            ResultSet Rs = pst.executeQuery();
-            
-            ResultSetMetaData RSMD = Rs.getMetaData();
+    private void ClienteData() {
 
-            QQ = RSMD.getColumnCount();
-            
-            DefaultTableModel DFG =(DefaultTableModel)table1.getModel(); 
-            
-            DFG.setRowCount(0);
-             
-            while(Rs.next()){
-        
-            Vector v2 = new Vector();
-             
-            for(int aa=1; aa<=QQ; aa++){
-                 
-                v2.add(Rs.getString("id"));
-                v2.add(Rs.getString("nome"));
-                v2.add(Rs.getString("email"));
-                v2.add(Rs.getString("endereco"));
+        try {
+
+            ClienteDAO dao = new ClienteDAO();
+
+            List<Cliente> lista = dao.listarTodos();
+
+            DefaultTableModel modelo = (DefaultTableModel) table1.getModel();
+
+            modelo.setRowCount(0);
+
+            for (Cliente cliente : lista) {
+
+                modelo.addRow(new Object[]{
+                    cliente.getId(),
+                    cliente.getNome(),
+                    cliente.getEmail(),
+                    cliente.getEndereco()
+                });
+
             }
-             
-             DFG.addRow(v2);
-            }
+
         } catch (SQLException ex) {
-            System.getLogger(ClienteJFrame.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
+
+            Logger.getLogger(ClienteJFrame.class.getName()).log(Level.SEVERE, null, ex);
+
         }
+
     }
     
     @SuppressWarnings("unchecked")
@@ -245,62 +231,73 @@ public class ClienteJFrame extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnInsertActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnInsertActionPerformed
+
         try {
-            String id = txtId.getText();
-            String nome = txtName.getText();
-            String email = txtEmail.getText();
-            String endereco = txtAddress.getText();
-            
-            pst = con.prepareStatement("INSERT INTO cliente (id,nome,email,endereco)VALUES(?,?,?,?)");
-            
-            pst.setString(1,id);
-            pst.setString(2,nome);
-            pst.setString(3,email);
-            pst.setString(4,endereco);
-            
-            pst.executeUpdate();
-            JOptionPane.showMessageDialog(this, "Cliente inserido com sucesso!");
+
+            Cliente cliente = new Cliente();
+
+            cliente.setId(Integer.parseInt(txtId.getText()));
+            cliente.setNome(txtName.getText());
+            cliente.setEmail(txtEmail.getText());
+            cliente.setEndereco(txtAddress.getText());
+
+            ClienteDAO dao = new ClienteDAO();
+
+            dao.inserir(cliente);
+
+            JOptionPane.showMessageDialog(this, "Cliente cadastrado com sucesso!");
+
             ClienteData();
-        } catch (SQLException ex) {
-            System.getLogger(ClienteJFrame.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
+
+        } catch (Exception ex) {
+
+            Logger.getLogger(ClienteJFrame.class.getName()).log(Level.SEVERE, null, ex);
+
         }
+
     }//GEN-LAST:event_btnInsertActionPerformed
 
     private void btnUpdateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnUpdateActionPerformed
         try {
-            String id = txtId.getText();
-            String nome = txtName.getText();
-            String email = txtEmail.getText();
-            String endereco = txtAddress.getText();
-            
-            pst = con.prepareStatement("update cliente set nome= ?,email= ?,endereco= ? where id= ?");
-            
-            pst.setString(1,nome);
-            pst.setString(2,email);
-            pst.setString(3,endereco);
-            pst.setString(4,id);
-            
-            pst.executeUpdate();
+
+            Cliente cliente = new Cliente();
+
+            cliente.setId(Integer.parseInt(txtId.getText()));
+            cliente.setNome(txtName.getText());
+            cliente.setEmail(txtEmail.getText());
+            cliente.setEndereco(txtAddress.getText());
+
+            ClienteDAO dao = new ClienteDAO();
+
+            dao.atualizar(cliente);
+
             JOptionPane.showMessageDialog(this, "Cliente atualizado com sucesso!");
+
             ClienteData();
-        } catch (SQLException ex) {
-            System.getLogger(ClienteJFrame.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
+
+        } catch (Exception ex) {
+
+            Logger.getLogger(ClienteJFrame.class.getName()).log(Level.SEVERE, null, ex);
+
         }
     }//GEN-LAST:event_btnUpdateActionPerformed
 
     private void btnDeleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDeleteActionPerformed
-        try {
-            String id = txtId.getText();
-            
-            pst=con.prepareStatement("DELETE FROM cliente WHERE id=?");
-            pst.setString(1,id);
-            
-            pst.executeUpdate();
-            JOptionPane.showMessageDialog(this, "Cliente deletado com sucesso!");
-            ClienteData();
-        } catch (SQLException ex) {
-            System.getLogger(ClienteJFrame.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
-        }
+         try {
+
+        ClienteDAO dao = new ClienteDAO();
+
+        dao.excluir(Integer.parseInt(txtId.getText()));
+
+        JOptionPane.showMessageDialog(this, "Cliente removido com sucesso!");
+
+        ClienteData();
+
+    } catch (Exception ex) {
+
+        Logger.getLogger(ClienteJFrame.class.getName()).log(Level.SEVERE, null, ex);
+
+    }
     }//GEN-LAST:event_btnDeleteActionPerformed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
@@ -309,15 +306,15 @@ public class ClienteJFrame extends javax.swing.JFrame {
 
     private void btnTotalActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnTotalActionPerformed
         try {
-            String sql="select count(nome) from cliente";
-            pst=con.prepareStatement(sql);
-            ResultSet Rs = pst.executeQuery();
-            if(Rs.next()){
-                String sum=Rs.getString("count(nome)");
-                txtTotal.setText(sum);
-            }
+
+            ClienteDAO dao = new ClienteDAO();
+
+            txtTotal.setText(String.valueOf(dao.contar()));
+
         } catch (SQLException ex) {
-            System.getLogger(ClienteJFrame.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
+
+            Logger.getLogger(ClienteJFrame.class.getName()).log(Level.SEVERE, null, ex);
+
         }
     }//GEN-LAST:event_btnTotalActionPerformed
 

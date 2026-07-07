@@ -1,3 +1,10 @@
+package view;
+
+
+import view.FuncionarioJFrame;
+import view.AlugarJFrame;
+import view.ClienteJFrame;
+
 
 public class MainJFrame extends javax.swing.JFrame {
     

@@ -1,9 +1,15 @@
+package view;
+
+import view.ClienteJFrame;
 import java.sql.*;
 import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
+
+import dao.ComputadorDAO;
+import model.Computador;
 
 public class PcJFrame extends javax.swing.JFrame {
     
@@ -12,54 +18,34 @@ public class PcJFrame extends javax.swing.JFrame {
     
     public PcJFrame() {
         initComponents();
-        Connect();
         PcData();
     }
-    
-    Connection con;
-    PreparedStatement pst;
 
-    public void Connect(){
-        
-        try {
-            Class.forName("com.mysql.jdbc.Driver");
-            con = DriverManager.getConnection("jdbc:mysql://localhost/lanhousedb","root","");
-        } catch (ClassNotFoundException ex) {
-            System.getLogger(PcJFrame.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
-        } catch (SQLException ex) {
-            System.getLogger(PcJFrame.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
-        }
-        
-    }
     
     private void PcData(){
         try {
-            int QQ;
-            pst = con.prepareStatement("SELECT * FROM computador");
-            ResultSet Rs = pst.executeQuery();
-            
-            ResultSetMetaData RSMD = Rs.getMetaData();
 
-            QQ = RSMD.getColumnCount();
-            
-            DefaultTableModel DFG =(DefaultTableModel)table1.getModel(); 
-            
-            DFG.setRowCount(0);
-             
-            while(Rs.next()){
-        
-            Vector v2 = new Vector();
-             
-            for(int aa=1; aa<=QQ; aa++){
-                 
-                v2.add(Rs.getString("id"));
-                v2.add(Rs.getString("status"));
+            ComputadorDAO dao = new ComputadorDAO();
+
+            DefaultTableModel modelo = (DefaultTableModel) table1.getModel();
+
+            modelo.setRowCount(0);
+
+            for (Computador computador : dao.listarTodos()) {
+
+                modelo.addRow(new Object[]{
+
+                    computador.getId(),
+                    computador.getStatus()
+
+                });
+
             }
-             
-             DFG.addRow(v2);
-            }
+
         } catch (SQLException ex) {
-            System.getLogger(PcJFrame.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
+
+            Logger.getLogger(PcJFrame.class.getName()).log(Level.SEVERE, null, ex);
+
         }
     }
     
@@ -219,52 +205,66 @@ public class PcJFrame extends javax.swing.JFrame {
 
     private void btnInsertActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnInsertActionPerformed
         try {
-            String id = txtPcId.getText();
-            String status = txtPcStatus.getText();
-            
-            pst = con.prepareStatement("INSERT INTO computador (id,status)VALUES(?,?)");
-            
-            pst.setString(1,id);
-            pst.setString(2,status);
-            
-            pst.executeUpdate();
+            Computador computador = new Computador();
+
+            computador.setId(Integer.parseInt(txtPcId.getText()));
+            computador.setStatus(txtPcStatus.getText());
+
+            ComputadorDAO dao = new ComputadorDAO();
+
+            dao.inserir(computador);
+
             JOptionPane.showMessageDialog(this, "Computador cadastrado com sucesso!");
+
             PcData();
-        } catch (SQLException ex) {
-            System.getLogger(PcJFrame.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
+
+        } catch (Exception ex) {
+
+            Logger.getLogger(PcJFrame.class.getName()).log(Level.SEVERE, null, ex);
+
         }
     }//GEN-LAST:event_btnInsertActionPerformed
 
     private void btnUpdateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnUpdateActionPerformed
         try {
-            String id = txtPcId.getText();
-            String status = txtPcStatus.getText();
-            
-            pst = con.prepareStatement("update computador set status= ? where id= ?");
-            
-            pst.setString(1,status);
-            pst.setString(2,id);
-            
-            pst.executeUpdate();
-            JOptionPane.showMessageDialog(this, "Status do computador atualizado com sucesso!");
+
+            Computador computador = new Computador();
+
+            computador.setId(Integer.parseInt(txtPcId.getText()));
+            computador.setStatus(txtPcStatus.getText());
+
+            ComputadorDAO dao = new ComputadorDAO();
+
+            dao.atualizar(computador);
+
+            JOptionPane.showMessageDialog(this, "Status atualizado com sucesso!");
+
             PcData();
-        } catch (SQLException ex) {
-            System.getLogger(PcJFrame.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
+
+        } catch (Exception ex) {
+
+            Logger.getLogger(PcJFrame.class.getName()).log(Level.SEVERE, null, ex);
+
         }
     }//GEN-LAST:event_btnUpdateActionPerformed
 
     private void btnDeleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDeleteActionPerformed
         try {
-            String id = txtPcId.getText();
-            
-            pst=con.prepareStatement("DELETE FROM computador WHERE id=?");
-            pst.setString(1,id);
-            
-            pst.executeUpdate();
+
+            int id = Integer.parseInt(txtPcId.getText());
+
+            ComputadorDAO dao = new ComputadorDAO();
+
+            dao.excluir(id);
+
             JOptionPane.showMessageDialog(this, "Computador deletado com sucesso!");
+
             PcData();
-        } catch (SQLException ex) {
-            System.getLogger(PcJFrame.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
+
+        } catch (Exception ex) {
+
+            Logger.getLogger(PcJFrame.class.getName()).log(Level.SEVERE, null, ex);
+
         }
     }//GEN-LAST:event_btnDeleteActionPerformed
 
@@ -274,15 +274,15 @@ public class PcJFrame extends javax.swing.JFrame {
 
     private void btnTotalPcActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnTotalPcActionPerformed
         try {
-            String sql="select count(id) from computador";
-            pst=con.prepareStatement(sql);
-            ResultSet Rs = pst.executeQuery();
-            if(Rs.next()){
-                String sum=Rs.getString("count(id)");
-                txtTotalPc.setText(sum);
-            }
+
+            ComputadorDAO dao = new ComputadorDAO();
+
+            txtTotalPc.setText(String.valueOf(dao.contar()));
+
         } catch (SQLException ex) {
-            System.getLogger(PcJFrame.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
+
+            Logger.getLogger(PcJFrame.class.getName()).log(Level.SEVERE, null, ex);
+
         }
     }//GEN-LAST:event_btnTotalPcActionPerformed
 
