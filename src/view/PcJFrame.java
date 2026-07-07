@@ -61,13 +61,13 @@ public class PcJFrame extends javax.swing.JFrame {
         jLabel2 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
         txtPcId = new javax.swing.JTextField();
-        txtPcStatus = new javax.swing.JTextField();
         btnInsert = new javax.swing.JButton();
         btnUpdate = new javax.swing.JButton();
         btnDelete = new javax.swing.JButton();
         jLabel6 = new javax.swing.JLabel();
         btnTotalPc = new javax.swing.JButton();
         txtTotalPc = new javax.swing.JTextField();
+        cbStatus = new javax.swing.JComboBox<>();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -120,8 +120,6 @@ public class PcJFrame extends javax.swing.JFrame {
 
         txtPcId.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
 
-        txtPcStatus.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-
         btnInsert.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
         btnInsert.setText("Insert");
         btnInsert.addActionListener(this::btnInsertActionPerformed);
@@ -140,6 +138,10 @@ public class PcJFrame extends javax.swing.JFrame {
 
         txtTotalPc.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
 
+        cbStatus.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Disponível", "Ocupado", "Manutenção", "Reservado" }));
+        cbStatus.setName(""); // NOI18N
+        cbStatus.addActionListener(this::cbStatusActionPerformed);
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -152,9 +154,9 @@ public class PcJFrame extends javax.swing.JFrame {
                     .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(jLabel3, javax.swing.GroupLayout.DEFAULT_SIZE, 73, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(txtPcId, javax.swing.GroupLayout.DEFAULT_SIZE, 192, Short.MAX_VALUE)
-                    .addComponent(txtPcStatus))
+                    .addComponent(cbStatus, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jLabel6, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addContainerGap())
@@ -181,10 +183,10 @@ public class PcJFrame extends javax.swing.JFrame {
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jLabel2)
                             .addComponent(txtPcId, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(23, 23, 23)
+                        .addGap(26, 26, 26)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jLabel3)
-                            .addComponent(txtPcStatus, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                            .addComponent(cbStatus, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                     .addGroup(layout.createSequentialGroup()
                         .addGap(18, 18, 18)
                         .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 157, javax.swing.GroupLayout.PREFERRED_SIZE)))
@@ -286,6 +288,10 @@ public class PcJFrame extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_btnTotalPcActionPerformed
 
+    private void cbStatusActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbStatusActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_cbStatusActionPerformed
+
     
     public static void main(String args[]) {
         /* Set the Nimbus look and feel */
@@ -314,6 +320,7 @@ public class PcJFrame extends javax.swing.JFrame {
     private javax.swing.JButton btnInsert;
     private javax.swing.JButton btnTotalPc;
     private javax.swing.JButton btnUpdate;
+    private javax.swing.JComboBox<String> cbStatus;
     private javax.swing.JButton jButton1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
@@ -323,7 +330,6 @@ public class PcJFrame extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable table1;
     private javax.swing.JTextField txtPcId;
-    private javax.swing.JTextField txtPcStatus;
     private javax.swing.JTextField txtTotalPc;
     // End of variables declaration//GEN-END:variables
 }
