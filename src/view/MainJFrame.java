@@ -4,7 +4,9 @@ package view;
 import view.FuncionarioJFrame;
 import view.AlugarJFrame;
 import view.ClienteJFrame;
-
+import relatorio.GerarRelatorioCliente;
+import relatorio.GerarRelatorioComputador;
+import relatorio.GerarRelatorioAluguel;
 
 public class MainJFrame extends javax.swing.JFrame {
     
@@ -29,6 +31,9 @@ public class MainJFrame extends javax.swing.JFrame {
         jButton2 = new javax.swing.JButton();
         jButton3 = new javax.swing.JButton();
         jButton4 = new javax.swing.JButton();
+        btnRelatorioCliente = new javax.swing.JButton();
+        btnRelatorioComputador = new javax.swing.JButton();
+        btnRelatorioAluguel = new javax.swing.JButton();
         jLabel2 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -81,6 +86,15 @@ public class MainJFrame extends javax.swing.JFrame {
         jButton4.setText("Funcionário");
         jButton4.addActionListener(this::jButton4ActionPerformed);
 
+        btnRelatorioCliente.setText("Relatório-Cliente");
+        btnRelatorioCliente.addActionListener(this::btnRelatorioClienteActionPerformed);
+
+        btnRelatorioComputador.setText("Relatório-Computador");
+        btnRelatorioComputador.addActionListener(this::btnRelatorioComputadorActionPerformed);
+
+        btnRelatorioAluguel.setText("Relatório-Aluguel");
+        btnRelatorioAluguel.addActionListener(this::btnRelatorioAluguelActionPerformed);
+
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
@@ -88,6 +102,9 @@ public class MainJFrame extends javax.swing.JFrame {
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(btnRelatorioAluguel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(btnRelatorioComputador, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(btnRelatorioCliente, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(jButton1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(jButton4, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(jButton3, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -105,6 +122,12 @@ public class MainJFrame extends javax.swing.JFrame {
                 .addComponent(jButton3)
                 .addGap(18, 18, 18)
                 .addComponent(jButton4)
+                .addGap(18, 18, 18)
+                .addComponent(btnRelatorioCliente)
+                .addGap(18, 18, 18)
+                .addComponent(btnRelatorioComputador)
+                .addGap(18, 18, 18)
+                .addComponent(btnRelatorioAluguel)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -151,6 +174,18 @@ public class MainJFrame extends javax.swing.JFrame {
         new FuncionarioJFrame().setVisible(true);
     }//GEN-LAST:event_jButton4ActionPerformed
 
+    private void btnRelatorioClienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRelatorioClienteActionPerformed
+        GerarRelatorioCliente.gerar();
+    }//GEN-LAST:event_btnRelatorioClienteActionPerformed
+
+    private void btnRelatorioComputadorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRelatorioComputadorActionPerformed
+        GerarRelatorioComputador.gerar();
+    }//GEN-LAST:event_btnRelatorioComputadorActionPerformed
+
+    private void btnRelatorioAluguelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRelatorioAluguelActionPerformed
+        GerarRelatorioAluguel.gerar();
+    }//GEN-LAST:event_btnRelatorioAluguelActionPerformed
+
    
     public static void main(String args[]) {
         /* Set the Nimbus look and feel */
@@ -175,6 +210,9 @@ public class MainJFrame extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnRelatorioAluguel;
+    private javax.swing.JButton btnRelatorioCliente;
+    private javax.swing.JButton btnRelatorioComputador;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton3;
